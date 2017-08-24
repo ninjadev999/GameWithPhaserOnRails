@@ -1,0 +1,106 @@
+<script>
+  var game = new Phaser.Game(innerWidth, innerHeight, Phaser.CANVAS, 'phaser-example', {
+    preload: preload,
+    create: create,
+    update: update
+  });
+
+  function preload() {
+    game.load.image('board_tile', '<%= asset_path('board_tile') %>');
+    game.load.image('reward_smile', '<%= asset_path('reward_smile') %>');
+    game.load.image('background_space', '<%= asset_path('Background.png') %>');
+    game.load.image('spaceship', '<%= asset_path('Space_Ship.png') %>');
+    game.load.image('toilet', '<%= asset_path('Toilet.png') %>');
+    game.load.image('star01', '<%= asset_path('star.svg') %>');
+  }
+
+  // Look at asset URL helper in Rails, image URL
+
+  var spaceship;
+
+  function create() {
+
+    // create board assets
+    game.stage.backgroundColor = '#FFFFFF';
+    var background = game.add.sprite(0, 0, 'background_space');
+
+    // create game assets
+    var spaceship = new GamePiece('spaceship', 15, 75);
+
+    var toilet = new GamePiece('toilet', 5, 175);
+
+    var star = new GamePiece('star01', 5, 250);
+
+    var smile = new GamePiece('reward_smile', 15, 15);
+
+    var heart_sketch = [
+      '................',
+      '................',
+      '................',
+      '.000.......0000.',
+      '003300...0003300',
+      '0333300.00333330',
+      '0333330003333330',
+      '0333333333333300',
+      '.03333333333330.',
+      '.00333333333300.',
+      '..033333333300..',
+      '...0333333300...',
+      '...003333300....',
+      '....0333300.....',
+      '.....03300......',
+      '......000.......'
+    ];
+
+
+    game.create.texture('heart', heart_sketch, 4, 4, 0);
+
+    var heart = new GamePiece('heart', 15, 400);
+
+
+    // Temp working section
+
+
+
+    // ***************************************************************
+    // ********** Rough Save Data Code *******************************
+
+    heart.object.events.onDragStop.add(onDragStop, this);
+
+
+
+    // Test the heart movement, and saving the position data (for saved game)
+    var heartPrintout;
+    var heartPos = [];
+    var heartJSON;
+
+    // concept function for when a token or game piece is dropped after a drag.
+    // Should kick off the position data saving
+
+    function onDragStop() {
+      heartPrintout = "(" + heart.x + ", " + heart.y + "), ";
+      console.log(heartPrintout);
+      $('#Heart_Pos').append(heartPrintout);
+
+      // create an array for JSON file
+      heartPos = [{"x": heart.x, "y": heart.y}];
+     // console.log(heartPos);
+      heartJSON = JSON.stringify(heartPos);
+      console.log(heartJSON);
+
+
+      // I don't have this array to JSON parsing down yet.
+      // When I do, I expect JSON to a rails DB via AJAX is a good way to store board piece postiion info.
+//      var heartJSON = JSON.parse(heartPosJSON.toString(''));
+//      var stringyJSON = JSON.stringify(heartJSON.push);
+    }
+
+  }
+
+  function update() {
+
+  }
+
+</script>
+<p>Move the Heart, and watch the position update here</p>
+<p id="Heart_Pos">Heart Position (x,y): </p>
